@@ -7,7 +7,7 @@ const connection = mysql.createConnection({
   host: '92.113.22.6', // Use IP instead of domain name
   // port: 3306, // MySQL default port
   user: 'root',
-  password: 'Arain55522',
+  password: 'Admin12345$$',
   database: 'najem_pay_db'
 });
 
