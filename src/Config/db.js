@@ -3,18 +3,19 @@ const dotenv = require('dotenv');
 
 dotenv.config(); // Ensure this is loaded
 
-// Create a connection to the database
 const connection = mysql.createConnection({
-  host: 'najempay.net', // Your database host
-  user: 'root', // Your database username
-  password: 'Arain55522', // Your database password
-  database: 'najem_pay_db' // Your database name
+  host: '82.112.255.73', // Use IP instead of domain name
+  port: 3306, // MySQL default port
+  user: 'root',
+  password: 'Arain55522',
+  database: 'najem_pay_db'
 });
 
+
 console.log('Connecting to MySQL with the following details:');
-console.log(`Host: ${connection.config.host}`);
-console.log(`User: ${connection.config.user}`); // This should show your username
-console.log(`Database: ${connection.config.database}`); // This should show your database
+// console.log(`Host: ${connection.config.host}`);
+// console.log(`User: ${connection.config.user}`); // This should show your username
+// console.log(`Database: ${connection.config.database}`); // This should show your database
 
 // Connect to the database
 connection.connect((err) => {
