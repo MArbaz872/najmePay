@@ -5,7 +5,7 @@ const router = express.Router();
 router.post('/signup', (req, res) => {
   const { username, password } = req.body;
   console.log(`Signup for ${username} ok ok`);
-  res.json({ message: `User ${username} signed up successfully` });
+  res.json({ message: `User ${username} signed up successfully server sy kiya ha login` });
 });
 
 // Login route
