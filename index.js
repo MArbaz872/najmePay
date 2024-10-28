@@ -14,7 +14,7 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes); 
 // Test route
 app.get('/', (req, res) => {
-  res.send('Welcome to NajemPay API');
+  res.send('Welcome to NajemPay API khgashjghs');
 });
 
 // Start server
