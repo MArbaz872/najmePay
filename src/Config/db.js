@@ -5,7 +5,7 @@ dotenv.config(); // Ensure this is loaded
 
 // Create a connection to the database
 const connection = mysql.createConnection({
-  host: '82.112.255.73', // Your database host
+  host: 'najempay.net', // Your database host
   user: 'root', // Your database username
   password: 'Arain55522', // Your database password
   database: 'najem_pay_db' // Your database name
