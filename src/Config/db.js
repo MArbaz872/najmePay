@@ -5,10 +5,10 @@ dotenv.config(); // Ensure this is loaded
 
 // Create a connection to the database
 const connection = mysql.createConnection({
-  host: process.env.DB_HOST, // Your database host
-  user: process.env.DB_USER, // Your database username
-  password: process.env.DB_PASSWORD, // Your database password
-  database: process.env.DB_NAME // Your database name
+  host: '82.112.255.73', // Your database host
+  user: 'root', // Your database username
+  password: 'Arain55522', // Your database password
+  database: 'najem_pay_db' // Your database name
 });
 
 console.log('Connecting to MySQL with the following details:');
