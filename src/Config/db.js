@@ -6,9 +6,9 @@ dotenv.config(); // Ensure this is loaded
 const connection = mysql.createConnection({
   host: '92.113.22.6', // Use IP instead of domain name
   // port: 3306, // MySQL default port
-  user: 'root',
-  password: 'Admin12345$$',
-  database: 'najem_pay_db'
+  user: 'u998392613_root',
+  password: 'Arain5522',
+  database: 'u998392613_najem_pay_db'
 });
 
 
@@ -18,6 +18,7 @@ console.log('Connecting to MySQL with the following details:');
 // console.log(`Database: ${connection.config.database}`); // This should show your database
 
 // Connect to the database
+console.log('yhnnn aya');
 connection.connect((err) => {
   if (err) {
     console.error('Error connecting to the database:', err);
