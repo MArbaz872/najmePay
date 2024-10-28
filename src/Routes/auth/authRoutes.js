@@ -23,9 +23,33 @@ router.post('/signup', (req, res) => {
 
 // Login route
 router.post('/login', (req, res) => {
-  const { userId, password } = req.body;
-  console.log(`Login for userId 1`);
-  res.json({ message: `UserName Arbaz logged in successfully` });
+  const { email, password } = req.body; // Expecting email and password in the request body
+
+  // Use a parameterized query to prevent SQL injection
+  const query = 'SELECT * FROM Users WHERE email = ?';
+
+  db.query(query, [email], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    if (results.length > 0) {
+      const user = results[0]; // Get the first matching user
+
+      // Check if the password matches (assuming you store passwords as plain text)
+      if (user.password === password) {
+        // Passwords match
+        return res.json({ message: `User ${email} logged in successfully` });
+      } else {
+        // Passwords do not match
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
+    } else {
+      // No user found with that email
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+  });
 });
 
 module.exports = router;
