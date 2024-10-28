@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config(); // Ensure this is loaded
 
 const connection = mysql.createConnection({
-  host: '92.113.22.6', // Use IP instead of domain name
+  host: '82.112.255.73', // Use IP instead of domain name
   // port: 3306, // MySQL default port
   user: 'u998392613_root',
   password: 'Arain5522',
