@@ -6,14 +6,14 @@ router.post('/signup', (req, res) => {
   const { name, username, profile_url, flag_url, referral_code, email, password, dob, present_address, permanent_address, city, postal_code, country } = req.body;
 
   // First, check if the email or username already exists
-  const checkQuery = 'SELECT * FROM Users WHERE email = ? OR username = ?';
+  const checkQuery = 'SELECT * FROM Users WHERE email = ? ';
 
-  db.query(checkQuery, [email, username], (err, results) => {
+  db.query(checkQuery, [email], (err, results) => {
     if (err) {
       console.error('Error checking existing user:', err);
       return res.status(500).json({
         statusCode: 500,
-        statusDescription: 'Internal Server Error',
+        statusDescription: 'Internal Server Error Select user',
       });
     }
 
@@ -29,12 +29,12 @@ router.post('/signup', (req, res) => {
     const sql = `INSERT INTO Users (name, username, profile_url, flag_url, referral_code, email, password, dob, present_address, permanent_address, city, postal_code, country, active, created_at) 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())`;
 
-    db.query(sql, [name, username, profile_url, flag_url, referral_code, email, password, dob, present_address, permanent_address, city, postal_code, country], (err, result) => {
+    db.query(sql, [name || '', username || '', profile_url || '', flag_url || '', referral_code || '', email, password, dob || '', present_address || '', permanent_address || '', city || '', postal_code || '', country || ''], (err, result) => {
       if (err) {
         console.error('Error executing query:', err);
         return res.status(500).json({
           statusCode: 500,
-          statusDescription: 'Internal Server Error',
+          statusDescription: ' Email should be unique.',
         });
       }
       console.log(`Signup for ${username} successful`);
