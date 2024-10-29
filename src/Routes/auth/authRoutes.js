@@ -29,7 +29,7 @@ router.post('/signup', (req, res) => {
     const sql = `INSERT INTO Users (name, username, profile_url, flag_url, referral_code, email, password, dob, present_address, permanent_address, city, postal_code, country, active, created_at) 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NOW())`;
 
-    db.query(sql, [name || '', username || '', profile_url || '', flag_url || '', referral_code || '', email, password, dob || '', present_address || '', permanent_address || '', city || '', postal_code || '', country || ''], (err, result) => {
+    db.query(sql, [name || '', username || '', profile_url || '', flag_url || '', referral_code || '', email, password, dob || '1990-01-01', present_address || '', permanent_address || '', city || '', postal_code || '', country || ''], (err, result) => {
       if (err) {
         console.error('Error executing query:', err);
         return res.status(500).json({
