@@ -10,12 +10,13 @@ dotenv.config(); // Ensure this is loaded
 //   password: 'Arain5522',
 //   database: 'najem_pay_db'
 // });
+
 const connection = mysql.createConnection({
-  host: '82.112.255.73', // Use IP instead of domain name
-  // port: 5001, // MySQL default port
-  user: 'mysql',
-  password: 'Arain5522',
-  database: 'najem_pay_db'
+  host: '82.112.255.73', // VPS public IP address
+  user: 'mysql',          // Remote MySQL user
+  password: 'Arain5522',  // Password for MySQL user
+  database: 'najem_pay_db',
+  port: 3306              // Default MySQL port
 });
 
 
