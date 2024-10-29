@@ -11,12 +11,18 @@ router.post('/signup', (req, res) => {
   db.query(checkQuery, [email, username], (err, results) => {
     if (err) {
       console.error('Error checking existing user:', err);
-      return res.status(500).json({ error: 'Database error occurred select' });
+      return res.status(500).json({
+        statusCode: 500,
+        statusDescription: 'Internal Server Error',
+      });
     }
 
     if (results.length > 0) {
       // User with that email or username already exists
-      return res.status(400).json({ error: 'Email or username already exists' });
+      return res.status(400).json({ 
+        statusCode: 400,
+        statusDescription: 'Email or username already exists' 
+      });
     }
 
     // If no existing user, proceed to insert the new user
@@ -26,10 +32,17 @@ router.post('/signup', (req, res) => {
     db.query(sql, [name, username, profile_url, flag_url, referral_code, email, password, dob, present_address, permanent_address, city, postal_code, country], (err, result) => {
       if (err) {
         console.error('Error executing query:', err);
-        return res.status(500).json({ error: 'Database error occurred insert' });
+        return res.status(500).json({
+          statusCode: 500,
+          statusDescription: 'Internal Server Error',
+        });
       }
       console.log(`Signup for ${username} successful`);
-      res.json({ message: `User ${username} signed up successfully` });
+      res.json({
+        statusCode: 200,
+        statusDescription: 'Success',
+        message: `User ${email} Signup successfully`
+      });
     });
   });
 });
@@ -44,7 +57,10 @@ router.post('/login', (req, res) => {
   db.query(query, [email], (err, results) => {
     if (err) {
       console.error('Database error:', err);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({
+        statusCode: 500,
+        statusDescription: 'Internal Server Error',
+      });
     }
     if (results.length > 0) {
       const user = results[0]; // Get the first matching user
@@ -53,18 +69,63 @@ router.post('/login', (req, res) => {
         // Passwords match
         const { password, ...userDetails } = user; // Exclude password from response
         return res.json({
-          message: `User ${email} logged in successfully`,
-          user: userDetails 
+          statusCode: 200,
+          statusDescription: 'Success',
+          data: {
+            user: userDetails
+          }
         });
       } else {
         // Passwords do not match
-        return res.status(401).json({ message: 'Invalid email or password' });
+        return res.status(401).json({
+          statusCode: 401,
+          statusDescription: 'Invalid email or password'
+        });
       }
     } else {
       // No user found with that email
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({
+        statusCode: 401,
+        statusDescription: 'Invalid email or password'
+      });
     }
   });
 });
+
+router.post('/edit-user', (req, res) => {
+  const { email, name, username, profile_url, flag_url, referral_code, password, dob, present_address, permanent_address, city, postal_code, country } = req.body;
+console.log('email=-=-=->',email);
+  // SQL query to update user details
+  const sql = `UPDATE Users 
+               SET name = ?, username = ?, profile_url = ?, flag_url = ?, referral_code = ?, password = ?, dob = ?, present_address = ?, permanent_address = ?, city = ?, postal_code = ?, country = ?
+               WHERE email = ?`;
+
+  // Execute the query
+  db.query(sql, [name, username, profile_url, flag_url, referral_code, password, dob, present_address, permanent_address, city, postal_code, country, email], (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).json({
+        statusCode: 500,
+        statusDescription: 'Internal Server Error',
+      });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        statusCode: 404,
+        statusDescription: 'User not found',
+      });
+    }
+
+    console.log(`User ${email} updated successfully`);
+    res.json({
+      statusCode: 200,
+      statusDescription: 'Success',
+      message: `User ${email} updated successfully`
+    });
+  });
+});
+
+
 
 module.exports = router;
