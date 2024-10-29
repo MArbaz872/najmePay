@@ -12,7 +12,7 @@ dotenv.config(); // Ensure this is loaded
 // });
 const connection = mysql.createConnection({
   host: 'najempay.net', // Use IP instead of domain name
-  // port: 5001, // MySQL default port
+  port: 3306, // MySQL default port
   user: 'root',
   password: 'Arain5522',
   database: 'najem_pay_db'
