@@ -3,12 +3,19 @@ const dotenv = require('dotenv');
 
 dotenv.config(); // Ensure this is loaded
 
+// const connection = mysql.createConnection({
+//   host: 'localhost', // Use IP instead of domain name
+//   // port: 5001, // MySQL default port
+//   user: 'root',
+//   password: 'Arain5522',
+//   database: 'najem_pay_db'
+// });
 const connection = mysql.createConnection({
   host: '82.112.255.73', // Use IP instead of domain name
-  port: 5001, // MySQL default port
+  // port: 5001, // MySQL default port
   user: 'root',
-  password: 'Admin12345$$',
-  database: 'u998392613_najem_pay_db'
+  password: 'Arain5522',
+  database: 'najem_pay_db'
 });
 
 
