@@ -4,9 +4,9 @@ const dotenv = require('dotenv');
 dotenv.config(); // Ensure this is loaded
 
 const connection = mysql.createConnection({
-  host: '82.112.255.73', // Use IP instead of domain name
-  // port: 3306, // MySQL default port
-  user: 'u998392613_root',
+  host: 'najempay.net', // Use IP instead of domain name
+  port: 3306, // MySQL default port
+  user: 'u998392613_najem_pay',
   password: 'Arain5522',
   database: 'u998392613_najem_pay_db'
 });
