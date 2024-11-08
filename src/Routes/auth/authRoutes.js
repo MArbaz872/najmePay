@@ -185,15 +185,33 @@ router.post('/update-password', (req, res) => {
         });
       }
 
-      console.log(`Password for user with email ${email} updated successfully`);
-      res.json({
-        statusCode: 200,
-        statusDescription: 'Success',
-        message: `Password for user ${email} updated successfully`
+      // SQL query to fetch the updated user data
+      const getUserSql = `SELECT * FROM Users WHERE email = ?`;
+
+      // Fetch the updated user data
+      db.query(getUserSql, [email], (err, userData) => {
+        if (err) {
+          console.error('Error fetching user data:', err);
+          return res.status(500).json({
+            statusCode: 500,
+            statusDescription: 'Internal Server Error',
+            message: 'Error fetching updated user data'
+          });
+        }
+
+        // If user data is fetched successfully, send it back
+        console.log(`Password for user with email ${email} updated successfully`);
+        res.json({
+          statusCode: 200,
+          statusDescription: 'Success',
+          message: `Password for user ${email} updated successfully`,
+          userData: userData[0] // Send the entire user data
+        });
       });
     });
   });
 });
+
 
 
 module.exports = router;
