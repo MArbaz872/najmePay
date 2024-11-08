@@ -126,6 +126,74 @@ console.log('email=-=-=->',email);
   });
 });
 
+router.post('/update-password', (req, res) => {
+  const { email, password } = req.body;
+
+  console.log('email=-=-=->', email);
+  console.log('password=-=-=->', password);
+
+  // Check if email and password are provided
+  if (!email || !password) {
+    return res.status(400).json({
+      statusCode: 400,
+      statusDescription: 'Bad Request',
+      message: 'Email and password are required'
+    });
+  }
+
+  // SQL query to check if the user exists
+  const checkUserSql = `SELECT * FROM Users WHERE email = ?`;
+
+  // Check if user exists
+  db.query(checkUserSql, [email], (err, result) => {
+    if (err) {
+      console.error('Error checking user:', err);
+      return res.status(500).json({
+        statusCode: 500,
+        statusDescription: 'Internal Server Error',
+        message: 'Error checking user'
+      });
+    }
+
+    if (result.length === 0) {
+      return res.status(404).json({
+        statusCode: 404,
+        statusDescription: 'User Not Found',
+        message: `No user found with email: ${email}`
+      });
+    }
+
+    // SQL query to update the password
+    const updatePasswordSql = `UPDATE Users SET password = ? WHERE email = ?`;
+
+    // Update the user's password in the database
+    db.query(updatePasswordSql, [password, email], (err, result) => {
+      if (err) {
+        console.error('Error updating password:', err);
+        return res.status(500).json({
+          statusCode: 500,
+          statusDescription: 'Internal Server Error',
+          message: 'Error updating password'
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          statusCode: 404,
+          statusDescription: 'No changes made',
+          message: 'No password update performed'
+        });
+      }
+
+      console.log(`Password for user with email ${email} updated successfully`);
+      res.json({
+        statusCode: 200,
+        statusDescription: 'Success',
+        message: `Password for user ${email} updated successfully`
+      });
+    });
+  });
+});
 
 
 module.exports = router;
