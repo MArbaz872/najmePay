@@ -275,4 +275,77 @@ router.post('/verify-otp', (req, res) => {
 });
 
 
+router.post('/google-signin', (req, res) => {
+  const { email, displayName, photoURL, phoneNumber, emailVerified, isNewUser, accessToken, idToken } = req.body;
+
+  // Check if the accessToken exists in the database
+  const checkAccessTokenQuery = 'SELECT * FROM Users WHERE accessToken = ?';
+  db.query(checkAccessTokenQuery, [accessToken], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({
+        statusCode: 500,
+        statusDescription: 'Internal Server Error',
+        message: 'Error checking access token'
+      });
+    }
+
+    if (results.length > 0) {
+      // Access token exists, return user data
+      const user = results[0];
+      const { password, ...userDetails } = user;
+      res.json({
+        statusCode: 200,
+        statusDescription: 'Access token exists',
+        message: 'Access token exists',
+        data: {
+          user: userDetails
+        }
+      });
+    } else {
+      // Access token not found, insert new user into the database
+      const insertUserQuery = `
+        INSERT INTO Users ( email, name, username, password, profile_url, phoneNumber, emailVerified, isNewUser, accessToken, idToken)
+        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+      const userValues = [email, displayName, displayName, displayName,photoURL, phoneNumber, emailVerified, isNewUser, accessToken, idToken];
+      
+      db.query(insertUserQuery, userValues, (err, result) => {
+        if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({
+            statusCode: 500,
+            statusDescription: 'Internal Server Error',
+            message: 'Error inserting user'
+          });
+        }
+
+        // Fetch the inserted user's full data
+        const getUserQuery = 'SELECT * FROM Users WHERE accessToken = ?';
+        db.query(getUserQuery, [accessToken], (err, userResults) => {
+          if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({
+              statusCode: 500,
+              statusDescription: 'Internal Server Error',
+              message: 'Error retrieving user data after insertion'
+            });
+          }
+
+          const newUser = userResults[0];
+          res.json({
+            statusCode: 201,
+            statusDescription: 'User created',
+            data: {
+              user: newUser
+            }
+          });
+        });
+      });
+    }
+  });
+});
+
+
+
 module.exports = router;
