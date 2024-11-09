@@ -8,15 +8,20 @@ const generateOTP = () => {
   return crypto.randomInt(100000, 999999); // Generates a 6-digit OTP
 };
 
+const getEmailService = (email) => {
+  const domain = email.split('@')[1].split('.')[0]; // Extract the part before the domain extension
+  return domain;
+};
 // Function to send OTP to email
-const sendOTP = async (email, service) => {
+const sendOTP = async (email) => {
   try {
     const otp = generateOTP(); // Generate OTP
+    const Service = getEmailService(email); 
 
     // Set up the transport
     const transporter = nodemailer.createTransport({
         // host: 'smtp.ethereal.email',
-        service: service,
+        service: Service,
         secure: true,
         port: 465,
 

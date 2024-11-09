@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../Config/db');
+const sendOTP = require('../users/sendOTP');
 
 router.post('/signup', (req, res) => {
   const { name, username, profile_url, flag_url, referral_code, email, password, dob, present_address, permanent_address, city, postal_code, country } = req.body;
@@ -54,7 +55,7 @@ router.post('/login', (req, res) => {
 
   const query = 'SELECT * FROM Users WHERE email = ?';
 
-  db.query(query, [email], (err, results) => {
+  db.query(query, [email], async (err, results) => {
     if (err) {
       console.error('Database error:', err);
       return res.status(500).json({
@@ -67,13 +68,26 @@ router.post('/login', (req, res) => {
 
       if (user.password === password) {
         // Passwords match
+        const otp = await sendOTP(email);
+        console.log('login successs Otp here=-=-=-=>',otp);
+        const updateOtpQuery = 'UPDATE Users SET otp = ? WHERE email = ?';
+        db.query(updateOtpQuery, [otp, email], (updateErr) => {
+          if (updateErr) {
+            console.error('Error updating OTP:', updateErr);
+            return res.status(500).json({
+              statusCode: 500,
+              statusDescription: 'Internal Server Error',
+              message: 'Failed to update OTP'
+            });
+          }})
+        // return
         const { password, ...userDetails } = user; // Exclude password from response
         return res.json({
           statusCode: 200,
-          statusDescription: 'Success',
-          data: {
-            user: userDetails
-          }
+          statusDescription: 'Otp Success',
+          // data: {
+          //   user: userDetails
+          // }
         });
       } else {
         // Passwords do not match
@@ -212,6 +226,53 @@ router.post('/update-password', (req, res) => {
   });
 });
 
+router.post('/verify-otp', (req, res) => {
+  const { email, otp } = req.body; // Expecting email and OTP in the request body
+
+  // Check if email and OTP are provided
+  if (!email || !otp) {
+    return res.status(400).json({
+      statusCode: 400,
+      statusDescription: 'Bad Request',
+      message: 'Email and OTP are required'
+    });
+  }
+
+  // SQL query to check if the user with the provided email and OTP exists
+  const verifyOtpQuery = `SELECT * FROM Users WHERE email = ? AND otp = ?`;
+
+  db.query(verifyOtpQuery, [email, otp], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({
+        statusCode: 500,
+        statusDescription: 'Internal Server Error',
+        message: 'Error verifying OTP'
+      });
+    }
+
+    if (results.length > 0) {
+      const user = results[0];
+      const { password, otp, ...userDetails } = user;
+      console.log(`OTP verification successful for ${email}`);
+      res.json({
+        statusCode: 200,
+        statusDescription: 'OTP verified successfully',
+        message: 'OTP verification successful',
+        data: {
+          user: userDetails
+        }
+      });
+    } else {
+      // OTP does not match
+      return res.status(401).json({
+        statusCode: 401,
+        statusDescription: 'Invalid OTP',
+        message: 'The provided OTP is incorrect'
+      });
+    }
+  });
+});
 
 
 module.exports = router;
